@@ -18,11 +18,23 @@ public:
     Point2D(Point2D &&sourcePoint2D);
     ~Point2D();
 
-    typedef vector<SimplePoint2D>::iterator iterator;
+    class Iterator;
+    Iterator begin();
+    Iterator end();
 
-    iterator begin();
-    iterator end();
+};
 
+class Point2D::Iterator
+{
+    class IterImpl;
+    IterImpl* pimpl;
+    
+    public:
+    Iterator();
+    SimplePoint2D operator*();
+    void operator++();
+    bool operator==(const Point2D::Iterator& i);
+    bool operator!=(const Point2D::Iterator& i);
 };
 
 #endif //POINT2D_H
