@@ -28,7 +28,7 @@ public:
     bool operator<=(const Number& n) const;
 
     // (Oscar) Assignment Operators
-	Number& operator=(std::string s);
+    Number& operator=(std::string s);
     Number& operator=(const char* s);
     Number& operator=(Number&& n);
     Number& operator=(const Number& n);

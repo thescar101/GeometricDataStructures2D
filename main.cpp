@@ -408,7 +408,7 @@ void test_Point2D()
 
     for (Point2D::Iterator itr = pointOBJ.begin(); itr != pointOBJ.end(); itr++)
     {
-        std::cout << "(" << itr->x << " , " << itr->y << ")" << std::endl;
+        std::cout << "(" << (*itr).x << " , " << (*itr).y << ")" << std::endl;
     }
 
     std::cout << "Testing Point2D Done" << std::endl;
