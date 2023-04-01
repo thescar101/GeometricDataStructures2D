@@ -8,9 +8,6 @@
 #include "Point2D.h"
 #include "Region2D.h"
 
-#include <algorithm>
-
-
 using namespace std;
 
 
@@ -44,12 +41,6 @@ void test_Number(void)
 
     Number squareRoot = sqrt(product);
     std::cout << "sqrt( " << num1 << " * " << num2 << " ) = " << squareRoot << std::endl;
-
-    Number newNum = std::move(num1);
-    std::cout << newNum << std::endl;
-
-    newNum = "5.0";
-    std::cout << newNum << std::endl;
 }
 
 void test_SimplePoint2D()
@@ -183,6 +174,16 @@ void test_Segment2D()
         cout << "True [incorrect]\n" << endl;
     else
         cout << "False [correct]\n" << endl;
+
+    // Testing intersection
+    if(segA.findIntersection(segB) != pointA)
+        cout << "True [incorrect]\n" << endl;
+    else
+        cout << "False [correct]\n" << endl;
+    if(segA.findIntersection(segC) == pointD)
+        cout << "True [correct]\n" << endl;
+    else
+        cout << "False [incorrect]\n" << endl;
     cout << "All tests ran for this data structure...\n\n" << endl;
 }
 
@@ -214,13 +215,13 @@ void test_HalfSegment2D()
 
 
     // HalfSegment objects for testing
-    HalfSegment2D hsegA(segA, true);
-    HalfSegment2D hsegB(segB, true);
-    HalfSegment2D hsegC(segC, true);
-    HalfSegment2D hsegD(hsegA);
+    HalfSegment2D hsegA(segA, true);    // dp: (1, 1) length of 1
+    HalfSegment2D hsegB(segB, true);    // dp: (2, 1) length of 1
+    HalfSegment2D hsegC(segC, true);    // dp: (1, 1) length of root(2)
+    HalfSegment2D hsegD(hsegA);         // dp: (1, 1) length of 1 -> length of root(2) after reassignment
 
-    HalfSegment2D hsegFlipC(segC, false);
-    HalfSegment2D hsegLongC(segLongC, true);
+    HalfSegment2D hsegFlipC(segC, false);       // dp: (2, 2) length of root(2)
+    HalfSegment2D hsegLongC(segLongC, true);    // dp: (1, 1) length of 2root(2)
 
     // Testing Constructors
     cout << "~ HalfSegment2D Tests\n\n-> Preset Value Constructor [hsegA]: L (" << hsegA.s.leftEndPoint.x << ", " << hsegA.s.leftEndPoint.y <<
@@ -229,7 +230,7 @@ void test_HalfSegment2D()
          ") ; R (" << hsegD.s.rightEndPoint.x << ", " << hsegD.s.rightEndPoint.y << ") ; Left-Dom = " << hsegA.isDominatingPointLeft << endl;
 
     // Testing Reassignment from Point to Point
-    hsegD = hsegC;
+    hsegD = hsegC; 
     cout << "\nAssignment Operator Test [hsegD = hsegC]: hsegD = L (" << hsegD.s.leftEndPoint.x << ", " << hsegD.s.leftEndPoint.y <<
          ") ; R (" << hsegD.s.rightEndPoint.x << ", " << hsegD.s.rightEndPoint.y << ") ; Left-Dom = " << hsegD.isDominatingPointLeft << "  |  hsegC = L (" << hsegC.s.leftEndPoint.x << ", " << hsegC.s.leftEndPoint.y <<
          ") ; R (" << hsegC.s.rightEndPoint.x << ", " << hsegC.s.rightEndPoint.y << ") ; Left-Dom = " << hsegC.isDominatingPointLeft << "\n" << endl;
@@ -269,11 +270,11 @@ void test_HalfSegment2D()
     else
         cout << "False [correct]\n" << endl;
     // Case 3: differ in length
-    cout << "-> hsegA < hsegLongC: " << endl;
-    if (hsegA < hsegLongC)
-        cout << "True [incorrect]\n" << endl;
+    cout << "-> hsegC < hsegLongC: " << endl;
+    if (hsegC < hsegLongC)
+        cout << "True [correct]\n" << endl;
     else
-        cout << "False [correct]\n" << endl;
+        cout << "False [incorrect]\n" << endl;
 
     // other equality operators
     cout << "-> hsegD <= hsegA: " << endl;
@@ -388,11 +389,8 @@ void test_AttributedHalfSegment2D()
 
 void test_Point2D()
 {
-    std::cout << "Testing Point2D" << std::endl;
-
     Number one = "1.0";
     Number two = "2.0";
-
 
     std::vector<SimplePoint2D> pointVector;
     SimplePoint2D pointA(two,one);
@@ -406,17 +404,15 @@ void test_Point2D()
 
     Point2D pointOBJ(pointVector);
 
-    for (Point2D::Iterator itr = pointOBJ.begin(); itr != pointOBJ.end(); itr++)
+    for (auto itr = pointOBJ.begin(); itr != pointOBJ.end(); itr++)
     {
         std::cout << "(" << itr->x << " , " << itr->y << ")" << std::endl;
     }
-
-    std::cout << "Testing Point2D Done" << std::endl;
 }
 
-void test_Line2D() 
+void test_Line2D()
 {
-    std::cout << "Testing Line2D" << std::endl;
+     std::cout << "Testing Line2D" << std::endl;
 
     // Points in space
     SimplePoint2D a("1.0", "2.0");
@@ -447,6 +443,10 @@ void test_Line2D()
     Line2D lines(lineSegments);
 
     std::cout << "Testing Line2D Done" << std::endl;
+}
+
+void test_Line2D() 
+{
 
 }
 
@@ -457,13 +457,11 @@ void test_Region2D()
 
 int main (void)
 {
-
-    test_Number();
+    //test_Number();
     test_SimplePoint2D();
     test_Point2D();
     test_Segment2D();
     test_HalfSegment2D();
-    test_Line2D();
     test_AttributedHalfSegment2D();
     return 0;
 }
