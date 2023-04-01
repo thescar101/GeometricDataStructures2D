@@ -9,9 +9,8 @@ using namespace std;
 class Point2D {
 private:
     class Impl;
-    Impl* pimpl;
-
-
+    unique_ptr<Impl> pimpl;
+    
 public:
     Point2D();
     Point2D(vector<SimplePoint2D> _pointCollection);
@@ -31,10 +30,9 @@ class Point2D::Iterator
     IterImpl* pimpl;
     
     public:
-    Iterator(Impl* p, bool isBegin);
-    const SimplePoint2D& operator*();
-    Iterator& operator++();
-    Iterator& operator++(int);
+    Iterator();
+    SimplePoint2D operator*();
+    void operator++();
     bool operator==(const Point2D::Iterator& i);
     bool operator!=(const Point2D::Iterator& i);
 };

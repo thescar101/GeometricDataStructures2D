@@ -12,11 +12,18 @@ struct Point2D::Impl
     vector<SimplePoint2D> pointCollection;
 };
 
-struct Point2D::Iterator::IterImpl
+class Point2D::Iterator::IterImpl
 {
-    Impl* pointsPTR;
-    int currentIndex;
-    IterImpl(Impl* p, bool isBegin);
+    friend Point2D;
+
+    vector<SimplePoint2D>::iterator vectorIter;
+
+    public:
+    IterImpl();
+    SimplePoint2D operator*();
+    void operator++();
+    bool operator==(const Point2D::Iterator& i);
+    bool operator!=(const Point2D::Iterator& i);
 };
 
 Point2D::Point2D() {}
@@ -38,56 +45,36 @@ Point2D::Point2D(Point2D &&sourcePoint2D)
 
 Point2D::~Point2D(){}
 
-Point2D::Iterator Point2D::begin()
+
+Point2D::Iterator::IterImpl::IterImpl() {}
+
+SimplePoint2D Point2D::Iterator::IterImpl::operator*()
 {
-    Iterator itr(this->pimpl, true);
-    return itr;
+    return *vectorIter;
 }
-
-Point2D::Iterator Point2D::end()
+void Point2D::Iterator::IterImpl::operator++()
 {
-    Iterator itr(this->pimpl, false);
-    return itr;
+    vectorIter++;
 }
-
-Point2D::Iterator::IterImpl::IterImpl(Impl* p, bool isBegin)
+bool Point2D::Iterator::IterImpl::operator==(const Point2D::Iterator& i)
 {
-    pointsPTR = p;
-
-    if (isBegin)
-        currentIndex = 0;
-    else
-        currentIndex = pointsPTR->pointCollection.size();
+    return (this->vectorIter == i.vectorIter);
 }
-
-Point2D::Iterator::Iterator(Impl* p, bool isBegin) : pimpl(new IterImpl(p, isBegin))
-{
-}
-
-const SimplePoint2D& Point2D::Iterator::operator*()
-{
-    return pimpl->pointsPTR->pointCollection.at(pimpl->currentIndex);
-}
-
-Point2D::Iterator& Point2D::Iterator::operator++()
-{
-    pimpl->currentIndex++;
-    return *this;
-}
-
-Point2D::Iterator& Point2D::Iterator::operator++(int)
-{
-    ++(*this);
-    return *this;
-}
-
-bool Point2D::Iterator::operator==(const Point2D::Iterator& i)
-{
-    return this->pimpl->currentIndex == i.pimpl->currentIndex;
-}
-
-bool Point2D::Iterator::operator!=(const Point2D::Iterator& i)
+bool Point2D::Iterator::IterImpl::operator!=(const Point2D::Iterator& i)
 {
     return !(*this == i);
 }
 
+Point2D::Iterator Point2D::begin() 
+{
+    Iterator returnIter; // Construct an iter to return
+    returnIter.vectorIter = this->pimpl->pointCollection.begin(); // Set state to beginning of point collection
+    return returnIter;
+}
+
+Point2D::Iterator Point2D::end() 
+{
+    Iterator returnIter; // Construct an iter to return
+    returnIter.vectorIter = this->pimpl->pointCollection.end(); // Set state to end of point collection
+    return returnIter;
+}
